@@ -1,0 +1,59 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# C extensions
+*.so
+
+# Virtual env
+.venv/
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# VS Code / PyCharm
+.vscode/
+.idea/
+
+# macOS
+.DS_Store
+
+# Logs
+*.log
+
+# Environment variables
+.env
+.env.*
+
+# Alembic migrations
+alembic/versions/*.pyc
+alembic/versions/__pycache__/
+alembic.ini
+
+# Docker
+*.pid
+*.tar
+docker-compose.override.yml
+
+# MyPy / coverage / pytest
+.mypy_cache/
+.dmypy.json
+.pytest_cache/
+.coverage
+htmlcov/
+coverage.xml
+
+# pyproject tools
+poetry.lock
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Cache
+.cache/
+__pypackages__/
+
+/uv.lock
+/config.yaml

@@ -1,0 +1,10 @@
+[project]
+name = 'AleTrail'
+version = '0.1.0'
+description = 'API for craft pubs'
+readme = 'README.md'
+dependencies = [
+    'fastapi==0.115.13',
+    'uvicorn==0.34.3',
+]
+requires-python = '>=3.10'
