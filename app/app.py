@@ -3,8 +3,9 @@ from typing import AsyncGenerator
 
 import aiohttp
 from fastapi import FastAPI
-from starlette.requests import Request
+from starlette.middleware.sessions import SessionMiddleware
 
+from .middleware.auth import AuthMiddleware
 from .modules.config import config
 from .modules.db import Database
 from .modules.auth.routes import router as auth_router
@@ -60,8 +61,25 @@ async def http_client(app: FastAPI) -> AsyncGenerator[None, None]:
         await http_client.close()
 
 
-app = FastAPI(
-    lifespan=lifespan,
+app = FastAPI(lifespan=lifespan)
+
+app.add_middleware(
+    AuthMiddleware,
+    exclude_from_auth=[
+        '/v1/auth/signup',
+        '/v1/auth/signin',
+        '/docs',
+        '/openapi.json',
+        '/redoc',
+    ]
+)
+
+app.add_middleware(
+    SessionMiddleware,
+    secret_key=config.get('auth', {}).get('session_secret', 'change-me-in-production'),
+    same_site='lax',
+    max_age=config.get('auth', {}).get('session_max_age', 3600),
+    https_only=False,
 )
 
 app.include_router(

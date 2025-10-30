@@ -1,6 +1,8 @@
 from psycopg_pool import AsyncConnectionPool
 from psycopg.rows import dict_row
 
+
+
 class Database:
     def __init__(self, dsn: str, min_size: int = 1, max_size: int = 10):
         self._dsn = dsn
@@ -23,20 +25,29 @@ class Database:
             await self._pool.close()
             self._pool = None
 
-    async def execute(self, query: str, *args):
+    async def execute(self, query: str, *args, **kwargs):
         async with self._pool.connection() as conn:
             async with conn.cursor() as cur:
-                await cur.execute(query, args)
+                if kwargs:
+                    await cur.execute(query, kwargs)
+                else:
+                    await cur.execute(query, args)
                 return cur.rowcount
 
-    async def fetch(self, query: str, *args):
+    async def fetch(self, query: str, *args, **kwargs):
         async with self._pool.connection() as conn:
             async with conn.cursor(row_factory=dict_row) as cur:
-                await cur.execute(query, args)
+                if kwargs:
+                    await cur.execute(query, kwargs)
+                else:
+                    await cur.execute(query, args)
                 return await cur.fetchall()
 
-    async def fetchone(self, query: str, *args):
+    async def fetchone(self, query: str, *args, **kwargs):
         async with self._pool.connection() as conn:
             async with conn.cursor(row_factory=dict_row) as cur:
-                await cur.execute(query, args)
+                if kwargs:
+                    await cur.execute(query, kwargs)
+                else:
+                    await cur.execute(query, args)
                 return await cur.fetchone()
