@@ -1,14 +1,17 @@
+import importlib
+import pkgutil
 from contextlib import asynccontextmanager
+from pathlib import Path
 from typing import AsyncGenerator
 
 import aiohttp
 from fastapi import FastAPI
 from starlette.middleware.sessions import SessionMiddleware
 
-from .middleware.auth import AuthMiddleware
-from .modules.config import config
-from .modules.db import Database
-from .modules.auth.routes import router as auth_router
+from middleware.auth import AuthMiddleware
+from modules.config import config
+from modules.db import Database
+
 
 
 @asynccontextmanager
@@ -82,7 +85,15 @@ app.add_middleware(
     https_only=False,
 )
 
-app.include_router(
-    auth_router,
-    prefix='/v1',
-)
+
+for _, m_name, ispkg in pkgutil.iter_modules([str(Path(__file__).parent / 'modules')]):
+    if not ispkg:
+        continue
+
+    module = importlib.import_module(f'modules.{m_name}.routes')
+    if hasattr(module, 'router'):
+        for route in module.router.routes:
+            if not getattr(route, 'response_model_exclude_unset', False):
+                route.response_model_exclude_unset = True
+
+        app.include_router(module.router, prefix='/v1')

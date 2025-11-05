@@ -34,4 +34,4 @@ def upgrade() -> None:
 
 
 def downgrade():
-    op.execute("DROP TABLE users;")
+    op.execute('DROP TABLE users;')

@@ -8,9 +8,7 @@ from .schema import (
 )
 
 
-
 router = APIRouter(prefix='/auth', tags=['auth'])
-
 
 
 @router.post('/signup')
